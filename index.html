@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planos Black — Exemplo</title>
+  <style>
+    :root {
+      --bg: #000;
+      --card: #0b0b0b;
+      --muted: #9aa0a6;
+      --text: #f5f5f5;
+      --accent: #7f1d1d; /* vermelho escuro */
+      --gold: #dc2626;  /* vermelho premium */
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #000 0%, #050505 100%);
+      color: var(--text);
+    }
+    header {
+      padding: 48px 20px;
+      border-bottom: 1px solid #111;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px; /* mais afastado */
+    }
+    .plan {
+      animation: cardIn .6s ease-out both;
+      opacity: 0;
+
+      transition: transform .2s ease, box-shadow .2s ease;
+
+      background: radial-gradient(120% 120% at 0% 0%, #140000 0%, var(--card) 45%, #050000 100%);
+      border: 1px solid #111;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.6);
+      position: relative;
+      overflow: hidden;
+
+    }
+    .plan::after {
+      content: "";
+      position: absolute;
+      inset: auto -40% -60% auto;
+      width: 140%;
+      height: 140%;
+      background: radial-gradient(closest-side, rgba(201,162,77,.15), transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #120000;
+      border: 1px solid #1a1a1a;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .price {
+      font-size: 36px;
+      font-weight: 700;
+      margin: 6px 0 10px;
+    }
+    .limit {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .card-mock {
+      background: linear-gradient(135deg, #0b0000, #1a0000);
+      border: 1px solid #1b1b1b;
+      border-radius: 16px;
+      padding: 16px;
+      margin: 14px 0 18px;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .chip {
+      width: 38px; height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #3b3b3b, #1c1c1c);
+      border: 1px solid #555;
+    }
+    .brand {
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--gold);
+    }
+    .number {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing: 2px;
+      font-size: 16px;
+      color: #d1d5db;
+      margin-bottom: 12px;
+    }
+    .card-bottom {
+      display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);
+    }
+    .cta {
+      display: block;
+      text-align: center;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #222;
+      background: #120000;
+      color: #fff;
+      text-decoration: none;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .cta:hover { transform: translateY(-1px); background: #0f0f0f; }
+    footer {
+      border-top: 1px solid #111;
+      padding: 24px 20px 40px;
+      color: #8b8b8b;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    footer .tiny {
+      max-width: 1000px; margin: 0 auto;
+    }
+    .featured {
+      border: 1px solid var(--gold);
+      box-shadow: 0 0 0 1px rgba(220,38,38,.25), 0 18px 50px rgba(220,38,38,.25);
+      transform: translateY(-4px);
+    }
+    .ribbon {
+      position: absolute;
+      top: 14px;
+      right: -40px;
+      background: linear-gradient(135deg, #dc2626, #7f1d1d);
+      color: #fff;
+      padding: 6px 46px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      transform: rotate(45deg);
+      box-shadow: 0 4px 12px rgba(0,0,0,.6);
+    }
+    .sold {
+      font-size: 11px;
+      color: #f87171;
+      margin-top: 6px;
+    }
+    .promo {
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      color: #001b0c;
+      border-color: #16a34a;
+    }
+    .old-price {
+      font-size: 14px;
+      color: #9ca3af;
+      text-decoration: line-through;
+      margin-top: 4px;
+    }
+    .main-title {
+      background: linear-gradient(135deg, var(--gold), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glowIn 2s ease-out forwards;
+      opacity: 0;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: .5px;
+    }
+    @keyframes glowIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+        filter: blur(6px);
+      }
+      60% {
+        opacity: 1;
+        filter: blur(0);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .plan:hover {
+      box-shadow: 0 0 0 1px rgba(220,38,38,.35), 0 22px 60px rgba(220,38,38,.35);
+      transform: translateY(-6px);
+    }
+/* ===== RESPONSIVO MOBILE ===== */
+    @media (max-width: 768px) {
+      header {
+        padding: 32px 16px;
+      }
+      header h1 {
+        font-size: 26px;
+        line-height: 1.2;
+      }
+      .subtitle {
+        font-size: 13px;
+      }
+      .container {
+        padding: 24px 16px 48px;
+      }
+      .grid {
+        gap: 20px;
+      }
+      .plan {
+        padding: 18px;
+        border-radius: 16px;
+      }
+      .price {
+        font-size: 28px;
+      }
+      .limit {
+        font-size: 13px;
+      }
+      .card-mock {
+        padding: 14px;
+      }
+      .number {
+        font-size: 14px;
+        letter-spacing: 1.5px;
+      }
+      .cta {
+        padding: 14px;
+        font-size: 15px;
+      }
+      footer {
+        font-size: 10px;
+      }
+      #activity {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    /* ===== TELAS GRANDES ===== */
+    @media (min-width: 1200px) {
+      header h1 {
+        font-size: 42px;
+      }
+      .price {
+        font-size: 40px;
+      }
+    }
+</style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="main-title">CC • Melhores Planos Black</h1>
+      <p class="subtitle">Escolha o plano ideal para você</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid">
+      <article class="plan">
+        <span class="badge">Plano 10</span>
+        <div class="price">R$ 10</div>
+        <div class="limit">Simulador de valor: <strong>R$ 100</strong></div>
+        <div class="card-mock">
+          <div class="card-top">
+            <div class="chip"></div>
+            <div class="brand">BLACK</div>
+          </div>
+          <div class="number">**** **** **** 4837</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan">
+        <span class="badge">Plano 20</span>
+        <div class="price">R$ 20</div>
+        <div class="limit">Simulador de valor: <strong>R$ 200</strong></div>
+        <div class="card-mock">
+          <div class="card-top">
+            <div class="chip"></div>
+            <div class="brand">BLACK</div>
+          </div>
+          <div class="number">**** **** **** 7294</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan">
+        <span class="badge">Plano 30</span>
+        <div class="price">R$ 30</div>
+        <div class="limit">Simulador de valor: <strong>R$ 300</strong></div>
+        <div class="card-mock">
+          <div class="card-top">
+            <div class="chip"></div>
+            <div class="brand">BLACK</div>
+          </div>
+          <div class="number">**** **** **** 5619</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan featured">
+        <div class="ribbon">MAIS VENDIDO</div>
+        <span class="badge">Plano 50</span>
+        <div class="price">R$ 50</div>
+        <div class="sold">+2.341 vendidos</div>
+        <div class="limit">Simulador de valor: <strong>R$ 500</strong></div>
+        <div class="card-mock">
+          <div class="card-top">
+            <div class="chip"></div>
+            <div class="brand">BLACK</div>
+          </div>
+          <div class="number">**** **** **** 6158</div>
+          <div class="card-bottom"><span>EXEMPLO</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan featured">
+        <div class="ribbon">PROMOÇÃO</div>
+        <span class="badge promo">Plano 100</span>
+        <div class="price">R$ 89</div>
+        <div class="old-price">de R$ 100</div>
+        <div class="sold">+1.120 vendidos</div>
+        <div class="limit">Simulador de valor: <strong>R$ 1.000</strong></div>
+        <div class="card-mock">
+          <div class="card-top">
+            <div class="chip"></div>
+            <div class="brand">BLACK</div>
+          </div>
+          <div class="number">**** **** **** 9026</div>
+          <div class="card-bottom"><span>EXEMPLO</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan">
+        <span class="badge">Plano 200</span>
+        <div class="price">R$ 200</div>
+        <div class="limit">Simulador de valor: <strong>R$ 2.000</strong></div>
+        <div class="card-mock">
+          <div class="card-top">
+            <div class="chip"></div>
+            <div class="brand">BLACK</div>
+          </div>
+          <div class="number">**** **** **** 3471</div>
+          <div class="card-bottom"><span>EXEMPLO</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan">
+        <span class="badge">Plano 300</span>
+        <div class="price">R$ 300</div>
+        <div class="limit">Simulador de valor: <strong>R$ 3.000</strong></div>
+        <div class="card-mock">
+          <div class="card-top">
+            <div class="chip"></div>
+            <div class="brand">BLACK</div>
+          </div>
+          <div class="number">**** **** **** 8842</div>
+          <div class="card-bottom"><span>EXEMPLO</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+          
+      <article class="plan">
+        <span class="badge">Plano 150</span>
+        <div class="price">R$ 129</div>
+        
+        <div class="limit">Simulador de valor: <strong>R$ 1.500</strong></div>
+        <div class="card-mock">
+          <div class="card-top"><div class="chip"></div><div class="brand">BLACK</div></div>
+          <div class="number">**** **** **** 1111</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan">
+        <span class="badge">Plano 250</span>
+        <div class="price">R$ 250</div>
+        <div class="limit">Simulador de valor: <strong>R$ 2.500</strong></div>
+        <div class="card-mock">
+          <div class="card-top"><div class="chip"></div><div class="brand">BLACK</div></div>
+          <div class="number">**** **** **** 2222</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan">
+        <span class="badge">Plano 350</span>
+        <div class="price">R$ 350</div>
+        <div class="limit">Simulador de valor: <strong>R$ 3.500</strong></div>
+        <div class="card-mock">
+          <div class="card-top"><div class="chip"></div><div class="brand">BLACK</div></div>
+          <div class="number">**** **** **** 3333</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan">
+        <span class="badge">Plano 400</span>
+        <div class="price">R$ 400</div>
+        <div class="limit">Simulador de valor: <strong>R$ 4.000</strong></div>
+        <div class="card-mock">
+          <div class="card-top"><div class="chip"></div><div class="brand">BLACK</div></div>
+          <div class="number">**** **** **** 4444</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+
+      <article class="plan featured">
+        <div class="ribbon">TOP</div>
+        <span class="badge">Plano 500</span>
+        <div class="price">R$ 500</div>
+        <div class="limit">Simulador de valor: <strong>R$ 5.000</strong></div>
+        <div class="card-mock">
+          <div class="card-top"><div class="chip"></div><div class="brand">BLACK</div></div>
+          <div class="number">**** **** **** 5555</div>
+          <div class="card-bottom"><span>BLACK</span><span>12/29</span></div>
+        </div>
+        <a class="cta" href="#">Comprar</a>
+      </article>
+    </section>
+  </main>
+
+  
+
+  
+<script>
+  // Animação em cascata dos cards
+  document.querySelectorAll('.plan').forEach((card, i) => {
+    card.style.animationDelay = `${i * 0.08}s`;
+  });
+
+  // Numeração aleatória
+  document.querySelectorAll('.number').forEach(el => {
+    const rand = () => Math.floor(1000 + Math.random() * 9000);
+    el.textContent = `**** **** **** ${rand()}`;
+  });
+  // Validade aleatória MM/AA
+  document.querySelectorAll('.card-bottom span:last-child').forEach(el => {
+    const mm = String(Math.floor(1 + Math.random() * 12)).padStart(2,'0');
+    const yy = String(Math.floor(26 + Math.random() * 6));
+    el.textContent = `${mm}/${yy}`;
+  });
+  // Ordenar do mais barato para o mais caro
+  const grid = document.querySelector('.grid');
+  [...grid.children]
+    .sort((a,b)=>{
+      const pa = Number(a.querySelector('.price').textContent.replace(/[^0-9]/g,''));
+      const pb = Number(b.querySelector('.price').textContent.replace(/[^0-9]/g,''));
+      return pa - pb;
+    })
+    .forEach(el=>grid.appendChild(el));
+
+  // MAPA DE CHECKOUTS (Perfect Pay)
+  const checkoutMap = {
+    'Plano 10':  'https://pay.perfectpay.com.br/checkout/PLANO10',
+    'Plano 20':  'https://pay.perfectpay.com.br/checkout/PLANO20',
+    'Plano 30':  'https://pay.perfectpay.com.br/checkout/PLANO30',
+    'Plano 50':  'https://pay.perfectpay.com.br/checkout/PLANO50',
+    'Plano 100': 'https://pay.perfectpay.com.br/checkout/PLANO100',
+    'Plano 150': 'https://pay.perfectpay.com.br/checkout/PLANO150',
+    'Plano 200': 'https://pay.perfectpay.com.br/checkout/PLANO200',
+    'Plano 250': 'https://pay.perfectpay.com.br/checkout/PLANO250',
+    'Plano 300': 'https://pay.perfectpay.com.br/checkout/PLANO300',
+    'Plano 350': 'https://pay.perfectpay.com.br/checkout/PLANO350',
+    'Plano 400': 'https://pay.perfectpay.com.br/checkout/PLANO400',
+    'Plano 500': 'https://pay.perfectpay.com.br/checkout/PLANO500'
+  };
+
+  // Direcionar botão Comprar para o checkout correto
+  document.querySelectorAll('.plan').forEach(plan => {
+    const badge = plan.querySelector('.badge')?.textContent?.trim();
+    const btn = plan.querySelector('.cta');
+    if (btn && badge && checkoutMap[badge]) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open(checkoutMap[badge], '_blank');
+      });
+    }
+  });
+</script>
+
+  <!-- Aviso inferior -->
+  <section class="container" style="padding-top:40px">
+    <div style="border-top:1px solid #111; padding-top:28px; text-align:center">
+      <p style="font-size:22px; font-weight:800; letter-spacing:.5px; margin:0 0 10px; color:#e5e7eb">
+        ATENÇÃO: APÓS A COMPRA, VOCÊ RECEBERÁ O MATERIAL AUTOMATICAMENTE NO SEU E-MAIL CADASTRADO.
+      </p>
+      <p style="font-size:12px; color:#9aa0a6; margin:0; line-height:1.7">
+        O material disponibilizado neste ambiente consiste exclusivamente em <strong>conteúdo informativo, educativo e ilustrativo</strong>, elaborado com a finalidade de apresentar conceitos gerais, exemplos visuais, simulações e explicações teóricas relacionadas ao universo de <strong>cartões de crédito</strong>, produtos financeiros, limites, nomenclaturas e práticas de mercado amplamente conhecidas. Em nenhuma hipótese este site realiza, intermedia, promete ou garante a emissão, fornecimento, ativação ou disponibilização de cartões de crédito reais, virtuais ou físicos, tampouco concede limites financeiros, crédito pessoal ou qualquer instrumento bancário. As imagens, numerações, datas, marcas, bandeiras e representações gráficas exibidas têm caráter meramente demonstrativo, sem validade operacional, contratual ou financeira, não devendo ser interpretadas como oferta, proposta ou recomendação de serviço financeiro. O acesso ao conteúdo não substitui orientação profissional, análise individual de crédito, nem estabelece vínculo com instituições bancárias, financeiras ou administradoras de cartões.
+      </p>
+    </div>
+  </section>
+
+<footer>
+  <div class="tiny" style="display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center">
+    <div>
+      <a href="https://perfectpay.com.br/afiliados" target="_blank" style="color:#9aa0a6;text-decoration:none;font-size:12px">Área de Afiliados</a>
+    </div>
+    <div>
+      <span>© Todos os direitos reservados</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Atividades recentes -->
+<div id="activity" style="position:fixed;bottom:20px;left:20px;z-index:9999;display:none;">
+  <div style="background:#0b0b0b;border:1px solid #1a1a1a;border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.6);min-width:220px">
+    <div style="font-size:12px;color:#9aa0a6;margin-bottom:4px">Atividade recente</div>
+    <div id="activity-text" style="font-size:14px;color:#f5f5f5;font-weight:600"></div>
+  </div>
+</div>
+
+<script>
+  // ===== ATIVIDADES RECENTES (SIMULADO / SEGURO) =====
+  const activities = [
+    'Plano 10 visualizado agora',
+    'Plano 20 visualizado agora',
+    'Plano 30 visualizado agora',
+    'Plano 50 visualizado agora',
+    'Plano 100 visualizado agora',
+    'Plano 150 visualizado agora',
+    'Plano 200 visualizado agora',
+    'Plano 250 visualizado agora',
+    'Plano 300 visualizado agora',
+    'Plano 350 visualizado agora',
+    'Plano 400 visualizado agora',
+    'Plano 500 visualizado agora'
+  ];
+
+  const box = document.getElementById('activity');
+  const text = document.getElementById('activity-text');
+
+  function showActivity() {
+    const msg = activities[Math.floor(Math.random() * activities.length)];
+    text.textContent = msg;
+    box.style.display = 'block';
+    box.style.opacity = '0';
+    box.style.transform = 'translateY(10px)';
+
+    requestAnimationFrame(() => {
+      box.style.transition = 'all .4s ease';
+      box.style.opacity = '1';
+      box.style.transform = 'translateY(0)';
+    });
+
+    setTimeout(() => {
+      box.style.opacity = '0';
+      box.style.transform = 'translateY(10px)';
+      setTimeout(() => box.style.display = 'none', 400);
+    }, 3500);
+  }
+
+  setTimeout(() => {
+    showActivity();
+    setInterval(showActivity, 6000);
+  }, 3000);
+</script>
+</body>
+</html>
